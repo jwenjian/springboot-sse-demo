@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE Demo Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/danmaku@1.3.5/dist/danmaku.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/light.min.css">
+    <style>
+        #dmk {
+            margin: auto auto;
+            width: 800px;
+            height: 600px;
+            background-color: antiquewhite;
+        }
+
+
+    </style>
+</head>
+<body onload="main()">
+<div>
+    <h1>SSE Demo Page</h1>
+    <p>This is a demo page to display the message from server via Server Send Event</p>
+    <div id="dmk"></div>
+</div>
+</body>
+<script>
+    function main() {
+        var DMK = new Danmaku();
+
+        DMK.init({
+          container: document.getElementById("dmk"),
+          engine: "canvas",
+          speed: 60
+        });
+
+        DMK.show();
+
+        var evt_source = new EventSource("/sse?uid=demo");
+
+        evt_source.onmessage = evt => {
+          DMK.emit({
+            text: evt.data
+          });
+        }
+
+        evt_source.onerror = err => {
+            DMK.emit({
+              text: 'SSE ERROR!!!'
+            });
+        }
+    }
+</script>
+</html>
